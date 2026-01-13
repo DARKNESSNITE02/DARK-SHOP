@@ -11,15 +11,15 @@ interface DashboardProps {
 }
 
 const StatCard: React.FC<{ title: string; value: string; icon: any; trend?: string }> = ({ title, value, icon: Icon, trend }) => (
-  <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
+  <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm dark:shadow-none transition-colors">
     <div className="flex justify-between items-start mb-4">
-      <div className="p-2 bg-zinc-950 rounded-lg border border-zinc-800">
-        <Icon size={20} className="text-violet-500" />
+      <div className="p-2 bg-gray-50 dark:bg-zinc-950 rounded-lg border border-gray-200 dark:border-zinc-800">
+        <Icon size={20} className="text-violet-600 dark:text-violet-500" />
       </div>
-      {trend && <span className="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">{trend}</span>}
+      {trend && <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-400/10 px-2 py-1 rounded-full">{trend}</span>}
     </div>
-    <h3 className="text-zinc-400 text-sm font-medium mb-1">{title}</h3>
-    <p className="text-2xl font-bold text-white">{value}</p>
+    <h3 className="text-zinc-500 dark:text-zinc-400 text-sm font-medium mb-1">{title}</h3>
+    <p className="text-2xl font-bold text-zinc-900 dark:text-white">{value}</p>
   </div>
 );
 
@@ -33,10 +33,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
       .filter(sale => sale.date === todayStr)
       .reduce((acc, sale) => acc + sale.amount, 0);
 
-    // Sum of all sales in the provided history (assuming history is filtered by API for 7/30 days in a real app)
     const totalRevenue = recentSales.reduce((acc, sale) => acc + sale.amount, 0);
-    
-    const newClients = recentSales.length; // Simply counting transactions as clients for this MVP
+    const newClients = recentSales.length;
 
     return {
       today: salesToday,
@@ -51,14 +49,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
     const today = new Date();
     const last7Days: ChartData[] = [];
 
-    // Initialize map for the last 7 days
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
       const dateStr = d.toLocaleDateString('pt-BR');
       const dayName = days[d.getDay()];
       
-      // Filter sales for this specific day
       const dailyTotal = recentSales
         .filter(sale => sale.date === dateStr)
         .reduce((acc, sale) => acc + sale.amount, 0);
@@ -73,14 +69,14 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Bem-vindo, {user.name} 👋</h1>
-          <p className="text-zinc-400 text-sm mt-1">Aqui está o resumo do seu negócio digital.</p>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Bem-vindo, {user.name} 👋</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">Aqui está o resumo do seu negócio digital.</p>
         </div>
         <div className="flex gap-2">
           {onCreateProduct && (
             <button 
               onClick={onCreateProduct}
-              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-zinc-700"
+              className="px-4 py-2 bg-white dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-gray-200 dark:border-zinc-700"
             >
               <Plus size={16} /> Criar Produto
             </button>
@@ -118,8 +114,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
       </div>
 
       {/* Chart Section */}
-      <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
-        <h2 className="text-lg font-semibold text-white mb-6">Receita nos últimos 7 dias</h2>
+      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-6 shadow-sm dark:shadow-none">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-6">Receita nos últimos 7 dias</h2>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
@@ -129,12 +125,14 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
                   <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-              <XAxis dataKey="name" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `R$${value}`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" className="dark:stroke-zinc-800" vertical={false} />
+              <XAxis dataKey="name" stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `R$${value}`} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', color: '#fff' }}
-                itemStyle={{ color: '#a78bfa' }}
+                contentStyle={{ backgroundColor: 'var(--tw-prose-invert-bg)', borderColor: 'var(--tw-prose-invert-borders)', borderRadius: '8px' }}
+                itemStyle={{ color: '#8b5cf6' }}
+                // We use a custom tooltip wrapper to handle dark mode class injection better or rely on simple css variables
+                wrapperClassName="text-zinc-900 dark:text-white"
               />
               <Area type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#colorValue)" />
             </AreaChart>
@@ -143,19 +141,19 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
       </div>
 
       {/* Recent Sales */}
-      <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-        <div className="p-6 border-b border-zinc-800">
-          <h2 className="text-lg font-semibold text-white">Vendas Recentes</h2>
+      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm dark:shadow-none">
+        <div className="p-6 border-b border-gray-200 dark:border-zinc-800">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Vendas Recentes</h2>
         </div>
         <div className="overflow-x-auto">
           {recentSales.length === 0 ? (
-            <div className="p-8 text-center text-zinc-500">
+            <div className="p-8 text-center text-zinc-500 dark:text-zinc-500">
               <p>Nenhuma venda realizada ainda.</p>
               <p className="text-xs mt-1">Compartilhe seus produtos para começar a faturar.</p>
             </div>
           ) : (
             <table className="w-full text-left text-sm">
-              <thead className="bg-zinc-950/50 text-zinc-400">
+              <thead className="bg-gray-50 dark:bg-zinc-950/50 text-zinc-500 dark:text-zinc-400">
                 <tr>
                   <th className="px-6 py-3 font-medium">Produto</th>
                   <th className="px-6 py-3 font-medium">Data</th>
@@ -163,19 +161,21 @@ const Dashboard: React.FC<DashboardProps> = ({ user, recentSales, onCreateProduc
                   <th className="px-6 py-3 font-medium text-right">Valor</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800">
+              <tbody className="divide-y divide-gray-200 dark:divide-zinc-800">
                 {recentSales.map((sale) => (
-                  <tr key={sale.id} className="hover:bg-zinc-950/30 transition-colors">
-                    <td className="px-6 py-4 font-medium text-white">{sale.productName}</td>
-                    <td className="px-6 py-4 text-zinc-400">{sale.date}</td>
+                  <tr key={sale.id} className="hover:bg-gray-50 dark:hover:bg-zinc-950/30 transition-colors">
+                    <td className="px-6 py-4 font-medium text-zinc-900 dark:text-white">{sale.productName}</td>
+                    <td className="px-6 py-4 text-zinc-500 dark:text-zinc-400">{sale.date}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        sale.type === 'sale' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-blue-500/10 text-blue-400'
+                        sale.type === 'sale' 
+                          ? 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                          : 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
                       }`}>
                         {sale.type === 'sale' ? 'Venda Direta' : 'Comissão'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right text-white font-medium">
+                    <td className="px-6 py-4 text-right text-zinc-900 dark:text-white font-medium">
                       + R$ {sale.amount.toFixed(2)}
                     </td>
                   </tr>
